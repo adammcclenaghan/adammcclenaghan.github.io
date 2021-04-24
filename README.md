@@ -107,7 +107,7 @@ The function for this endpoint checks if the song we passed in the request body 
 At this point a few things stand out:
 - The song names are being compared against the request body using an `includes` call. This means we have some freedom in what we pass to the endpoint, so long as we include one of the song names somewhere in the request.
 - There are only two possible responses. The only variable part is in the successful response, which has the `#{user}` variable.
-- The response is generated using via a `pug.compile` call
+- The response is generated via a `pug.compile` call
 
 So at this point, my thoughts were, "How do I inject a value for the `user` variable here? Can I inject a command such as `ls /app/flag*` and get the application to execute the command and return the output to me as part of the response? What does `pug.compile` do?"
 
@@ -119,7 +119,7 @@ What really stood out was the section on the `pug` module: https://blog.p6.is/AS
 
 The author provides a python script which sends a `POST` request to a vulnerable endpoint. This request causes the vulnerable endpoint to execute some code, providing us with a shell.
 
-I wasn't 100% sure if this exploit would work against the endpoint, but it only takes a minute to try it out so I figured it was worth a shot!
+I wasn't 100% sure if this exploit would work against the endpoint, but it only takes a minute to try it out so I figured it was worth a shot! 
 
 So, after running the script against the endpoint, I entered a valid song and pressed 'Submit'. This time, I get a status 500 Response
 ![image](https://user-images.githubusercontent.com/21271178/115799865-44a3a600-a3d1-11eb-9768-f49f66fe6d2d.png)
@@ -165,7 +165,7 @@ This can be done really easily in bash. If we modify the command so that it is `
 ![image](https://user-images.githubusercontent.com/21271178/115800759-2d65b800-a3d3-11eb-91a6-a5c33bd1f330.png)
 
 
-Perfect! The output is pretty large due to the number of files in the app directory, but here's a truncated example:
+Perfect! While going back through this challenge for this write-up, I used `ls /app*` instead of `ls /app/flag*` by mistake, so here is the truncated output:
 ```
 Error: Command failed: ls /app/* 1>&2 && exit 1
 /app/flagz8aiD
@@ -189,7 +189,7 @@ index.html
     at /app/node_modules/express/lib/router/index.js:281:22
 ```
 
-Well, now we have the file for the flag `/app/flagz8aiD`, all we have to do is get its contents! We can do that easily using `cat /app/flagz8aiD 1>&2 && exit 1`
+Well, now we have the file for the flag: `/app/flagz8aiD` . All we have to do is get its contents! We can do that easily using `cat /app/flagz8aiD 1>&2 && exit 1`
 
 ![image](https://user-images.githubusercontent.com/21271178/115801001-a2d18880-a3d3-11eb-8f1f-0587f945d104.png)
 
