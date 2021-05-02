@@ -70,7 +70,7 @@ Like all other challenges in the Web category, we are provided with a dockerized
 
 To begin with I opened the website just to get a visual idea of what I've got to work with:
 
-<img src="{{site.url}}/resources/images/BlitzProp/IndexPage.png" style="display: block; margin: auto;" />
+<img src="{{site.url}}/resources/images/BlitzProp/IndexPage.png" style="display: block; margin: auto;" class="img-responsive"/>
 
 The page is pretty basic. There is one area to input text along with a "Submit" button.
 
