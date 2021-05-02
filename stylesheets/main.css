@@ -3,6 +3,6 @@ img {
 }
 
 img:hover {
-    -webkit-transform:scale(1.8); /* or some other value */
-    transform:scale(1.8);
+    -webkit-transform:scale(2.2); /* or some other value */
+    transform:scale(2.2);
 }
