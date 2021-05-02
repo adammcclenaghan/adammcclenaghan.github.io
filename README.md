@@ -10,7 +10,7 @@ This blog is just a place for me to post my thoughts/experiences on various Soft
 
 You can contact me at: adammcclenaghan@protonmail.com
 
-<details><summary>Public PGP key</summary>
+<details><summary> Public PGP key</summary>
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 
 Version: OpenPGP.js v4.10.8
@@ -52,6 +52,7 @@ aZQs97QqbZ7S0+bf
 -----END PGP PUBLIC KEY BLOCK-----
 
 </details>
+
 
 
 # Hack The Box - Cyber Apocalypse 2021 - BlitzProp Writeup
