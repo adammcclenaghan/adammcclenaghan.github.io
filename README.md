@@ -1,4 +1,5 @@
 <link type="text/css" rel="stylesheet" href="stylesheets/main.css" />
+<meta name="viewport" content="width=device-width, initial-scale=.5, maximum-scale=12.0, minimum-scale=.25, user-scalable=yes"/>
 ## Welcome to my blog
 
 Hello 👋 My name is Adam, I'm a Software Engineer in the Computer & Network Security space.
