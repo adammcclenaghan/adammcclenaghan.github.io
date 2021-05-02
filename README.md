@@ -1,3 +1,4 @@
+<link type="text/css" rel="stylesheet" href="stylesheets/main.css" />
 ## Welcome to my blog
 
 Hello 👋 My name is Adam, I'm a Software Engineer in the Computer & Network Security space.
