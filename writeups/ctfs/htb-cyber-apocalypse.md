@@ -1,3 +1,5 @@
+<link type="text/css" rel="stylesheet" href="stylesheets/main.css" />
+<meta name="viewport" content="width=device-width, initial-scale=.5, maximum-scale=12.0, minimum-scale=.25, user-scalable=yes"/>
 # Hack The Box - Cyber Apocalypse 2021 - BlitzProp Writeup
 
 From 19th April 2021 - 23rd April 2021 [Hack The Box](https://www.hackthebox.eu/) ran their "Cyber Apocalypse" CTF. 
