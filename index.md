@@ -56,5 +56,7 @@ aZQs97QqbZ7S0+bf
 <br/><br/>
 
 ## Write ups
+### Blog posts
+[AWS Cloud Resume Challenge](/writeups/aws/cloud-resume.md)
 ### CTF Writeups
 [HackTheBox Cyber Apocalypse](/writeups/ctfs/htb-cyber-apocalypse.md)
