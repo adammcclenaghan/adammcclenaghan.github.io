@@ -109,7 +109,7 @@ This resource allows us to specify the bucket we want to add to and the object w
 
 One interesting argument I want to point out here is the `etag` argument. The reason I've specified this argument is because when I modify the `index.html` file, I want terraform to detect this change so that when my GitHub actions terraform integration performs a `terraform plan/terraform apply` it automatically updates the S3 bucket with the latest version of my `index.html` file. The `etag` forces Terraform to calculate the md5 hash of the file's content as part of a `terraform apply/terraform plan` because by default Terraform does not detect changes in file contents.
 
-With these 3 resource blocks (plus an extra `aws_s3_bucket_object` resource for the error.html file) our S3 coniguration is complete!
+With these 3 resource blocks (plus an extra `aws_s3_bucket_object` resource for the error.html file) our S3 configuration is complete!
 
 ### Configuring a CloudFront Distribution
 
