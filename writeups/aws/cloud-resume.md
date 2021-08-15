@@ -70,7 +70,7 @@ I will not provide exact details here of how I configured all of the resources i
 
 In terms of repository layout, I used separate GitHub repositories for the frontend and backend. If you have a [Terraform cloud](https://www.terraform.io/cloud) account you can setup terraform integration with GitHub actions really easily! There is a great guide [here](https://learn.hashicorp.com/tutorials/terraform/github-actions) on how to set this up. The default GitHub actions template for Terraform integration is excellent and I didn't have to make any changes to it to get it working! With this integration, each time I make a change to a branch with an open Pull Request, I'm able to see the output of `terraform plan` for that PR, this allows me to determine whether the changes made in the PR are going to affect my AWS resources in the intended way. Additionally, once a PR is merged to the `main` branch, GitHub actions will automatically kick off a `terraform apply` for us, this means that all we have to do is merge our changes to the `main` branch and then Terraform will go off and configure our resources based on the changes! Awesome:) 
 
-### Frontend Implementation <a name="frontend-implementation"></a>
+## Frontend Implementation <a name="frontend-implementation"></a>
 
 When I began this project, I didn't have an HTML copy of my resume and to be honest I was really looking forward to getting stuck into some Terraform, so I decided that I'd leave creating the resume until the end, and instead I'd just use a simple hello world written in html:
 ```
@@ -80,13 +80,13 @@ When I began this project, I didn't have an HTML copy of my resume and to be hon
 </html>
 ```
 
-#### Purchasing a domain name
+### Purchasing a domain name
 
 We need a domain name so that users can visit the site without having to use the long public endpoint URL that AWS static sites get by default. 
 
 Route 53 makes it very easy to purchase a domain name, I was able to purchase `adammcclenaghan.com` for $15 per year. There's an additional fee of $0.50 per hosted zone per month.
 
-#### Configuring an S3 static site
+### Configuring an S3 static site
 
 We'll use S3 to store the HTML/CSS for the resume. AWS S3 buckets can be configured as static websites.
 
@@ -111,7 +111,7 @@ One interesting argument I want to point out here is the `etag` argument. The re
 
 With these 3 resource blocks (plus an extra `aws_s3_bucket_object` resource for the error.html file) our S3 coniguration is complete!
 
-#### Configuring a CloudFront Distribution
+### Configuring a CloudFront Distribution
 
 Next, we need to configure a CloudFront distribution. CloudFront is AWS's serverless CDN solution. With CloudFront, the resume site will be cached at the edge allowing faster access globally. Setting up the CloudFront resource in Terraform took me a little longer than the rest of the resources for the frontend, there are quite a lot of configuration options. We can hook our CloudFront distribution up to the S3 bucket and ensure that it serves the index.html file. There are options through Terraform to configure the caching behaviour of our distribution.
 
@@ -119,7 +119,7 @@ Next, we need to configure a CloudFront distribution. CloudFront is AWS's server
 
 Note also the `viewer_certification` configuration argument. This references the ACM certificate that we'll set up soon. With this, content served from the CloudFront distribution will be SSL encrypted!
 
-#### Configuring Route 53 
+### Configuring Route 53 
 
 Route 53 is Amazon's DNS service. We need to hook Route 53 up to the Cloudfront distribution so that visitors of adammcclenaghan.com see the cloud resume. 
 
@@ -131,7 +131,7 @@ One thing to note is that by default when you purchase a domain through AWS, a h
 
 We will need to add an additional `aws_route53_record` for certificate validation, but we'll cover that in the next section. 
 
-#### Configuring an ACM certificate
+### Configuring an ACM certificate
 
 The final piece to configure for our backend is an ACM certificate for SSL verification. We need to create an ACM certificate and then we need to add a record to our hosted zone to enable DNS validation of the certificate.  You can read more about DNS validation [here](https://docs.aws.amazon.com/acm/latest/userguide/dns-validation.html). We also need to ensure that our Cloudfront resource has the `viewer_certificate` configuration block set to match with the ACM certificate that we create.
 
@@ -145,7 +145,7 @@ Then, we add another `aws_route53_record` to enable DNS validation of the cert!
 
 I'd like to mention one thing which did trip me up while configuring the ACM certificate. Until this point in development I had been using a single aws provider configured to use the `eu-north-1` region. As it turns out, the ACM service is only available in Virginia (us-east) region. So I did have to configure an extra provider at this point and configure the `aws_acm_certificate` and `aws_acm_certificate_validation` resources to use the provider in Virginia!
 
-#### Frontend Implementation Summary
+### Frontend Implementation Summary
 
 With all of these resources configured, we've successfully completed the frontend portion of the project! I used an iterative process to add each of these resources, using separate pull requests for most of the resources. This was a nice way to work as each push to the PR kicked off the Terraform GitHub actions job and displayed the `terraform plan` output so that I could validate whether my changes made sense before merging them to `main` (which results in a `terraform apply` kicking off automatically)
 
@@ -155,9 +155,9 @@ Despite looking very simple, I was really happy to see this little `Hello world!
 
 <img src="{{site.url}}/resources/images/CloudResume/frontend-summary.png" />
 
-### Backend Implementation <a name="backend-implementation"></a>
+## Backend Implementation <a name="backend-implementation"></a>
 
-#### Configuring DynamoDB
+### Configuring DynamoDB
 
 We need a DynamoDB table to keep track of the number of visitors to the cloud resume, so that we can show the count to visitors. 
 
@@ -178,7 +178,7 @@ Creating the DB in Terraform is quick:
 
 That's really all there is to creating the dynamodb table!
 
-#### Configuring Lambda
+### Configuring Lambda
 
 We need a Lambda function to retrieve the visitor count from the DB. This same lambda will also be responsible for updating the visitor count in the DB.
 
@@ -192,7 +192,7 @@ The Terraform resource configuration for the lambda was fairly simple, a lambda 
 
 I also added an `aws_cloudwatch_log_group` resource to the lambda. This ensures that logs from the lambda go to a Cloudwatch log group configured with a 1 day retention period. Using a Cloudwatch log group can really help to debug issues with your lambda.
 
-#### Configuring API Gateway
+### Configuring API Gateway
 
 API gateway is going to be the entrypoint to the backend component of this project. The API gateway will receive a request for the visitor count, it will make calls to the lambda, and then return the visitor count passed from the lambda back to the caller.
 
@@ -212,7 +212,7 @@ Quite a few resources for our API entrypoint!
 
 <img src="{{site.url}}/resources/images/CloudResume/backend-cloudwatch-api-gw-tf.png" />
 
-#### A little javascript
+### A little javascript
 
 Finally to hook it all together we need to add some JS! I kind of saw this as part of the backend but it does live in the frontend repo so, its debatable I guess.
 
@@ -220,7 +220,7 @@ Anyway, not a whole lot to the JS for this, we just make an asynchronous fetch t
 
 <img src="{{site.url}}/resources/images/CloudResume/backend-js.png" />
 
-#### Backend Implementation Summary
+### Backend Implementation Summary
 
 As with the frontend repo, I used the Terraform GitHub actions workflow to perform `terraform plan` on my PRs and `terraform apply` on merges to master. For the backend repo I also added a workflow for python tests. This was quite quick to setup, GitHub have great docs for this [here](https://docs.github.com/en/actions/guides/building-and-testing-python)
 
