@@ -16,7 +16,7 @@ timezone: Europe/London
 
 title: Adam McClenaghan # the main title
 
-tagline: "Software Engineer. Perf Nerd."
+tagline: "Software Engineer"
 
 description: >- # used by seo meta and the atom feed
   A minimal, responsive and feature-rich Jekyll theme for technical writing.
